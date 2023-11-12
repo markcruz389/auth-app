@@ -5,7 +5,7 @@ import app from "./app";
 
 dotenv.config();
 
-const PORT = process.env.NODE_DOCKER_PORT || 8080;
+const PORT = process.env.PORT;
 
 const server = http.createServer(app);
 

@@ -4,6 +4,6 @@ services:
     server:
         build:
             context: ./server
-        ports:
-            - $PORT:$PORT
-        env_file: ./server/.env
+            args:
+                - ENV=production
+            target: prod

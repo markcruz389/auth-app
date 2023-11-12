@@ -1,0 +1,13 @@
+{
+    "name": "auth-app",
+    "version": "1.0.0",
+    "description": "Redis session: https://medium.com/@ruveydayilmaz/session-based-auth-with-redis-9d9c832a59c5\r Dockerize Dev/Prod: https://www.youtube.com/watch?v=gm_L69NHuHM",
+    "main": "index.js",
+    "scripts": {
+        "docker-compose:dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build",
+        "docker-compose:prod": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build"
+      },  
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
+}

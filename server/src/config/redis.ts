@@ -1,5 +1,8 @@
-import redis from "redis";
+import { Redis } from "ioredis";
 
-const redisClient = redis.createClient();
+const redis = new Redis({
+    port: Number(process.env.REDIS_PORT),
+    host: process.env.REDIS_HOST,
+});
 
-export default redisClient;
+export { redis };

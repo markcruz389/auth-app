@@ -1,12 +1,18 @@
 import http from "node:http";
-import dotenv from "dotenv";
 
 import app from "./app";
+import { redis } from "./config/redis";
+import { mongoConnect } from "./config/mongo";
 
-dotenv.config();
+const PORT = process.env.SERVER_PORT;
 
-const PORT = process.env.PORT;
+const startServer = async () => {
+    await mongoConnect();
+    redis.set("test", "test");
 
-const server = http.createServer(app);
+    const server = http.createServer(app);
 
-server.listen(PORT, () => console.log(`Listening to PORT ${PORT}`));
+    server.listen(PORT, () => console.log(`Listening to PORT ${PORT}`));
+};
+
+startServer();

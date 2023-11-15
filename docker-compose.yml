@@ -1,9 +1,47 @@
 version: "3"
 
 services:
+    redis:
+        image: redis:7.2-alpine
+        ports:
+            - $REDIS_PORT:$REDIS_PORT
+        networks:
+            - backend
+
+    mongodb:
+        image: mongo
+        ports:
+            - $MONGO_PORT:$MONGO_PORT
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=$MONGODB_USER
+            - MONGO_INITDB_ROOT_PASSWORD=$MONGODB_PASSWORD
+        volumes:
+            - db:/data/db
+        networks:
+            - backend
+
     server:
+        depends_on:
+            - redis
+            - mongodb
         build:
             context: ./server
         ports:
-            - $PORT:$PORT
-        env_file: ./server/.env
+            - $HOST_PORT:$SERVER_PORT
+        environment:
+            - SERVER_PORT=$SERVER_PORT
+            - REDIS_PORT=$REDIS_PORT
+            - REDIS_HOST=$REDIS_HOST
+            - MONGODB_USER=$MONGODB_USER
+            - MONGODB_PASSWORD=$MONGODB_PASSWORD
+            - MONGODB_DATABASE=$MONGODB_DATABASE
+            - MONGODB_HOST=$MONGODB_HOST
+            - MONGO_PORT=$MONGO_PORT
+        networks:
+            - backend
+
+volumes:
+    db:
+
+networks:
+    backend:

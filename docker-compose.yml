@@ -9,7 +9,8 @@ services:
             - backend
 
     mongodb:
-        image: mongo
+        image: mongo:5.0.2
+        restart: unless-stopped
         ports:
             - $MONGO_PORT:$MONGO_PORT
         environment:
@@ -26,6 +27,7 @@ services:
             - mongodb
         build:
             context: ./server
+        restart: unless-stopped
         ports:
             - $HOST_PORT:$SERVER_PORT
         environment:

@@ -1,20 +1,20 @@
-import path from "node:path";
 import express from "express";
+
 import api from "./routes/v1";
-import { redis } from "./config/redis";
+
+import errorHandler, { CustomError } from "./middlewares/errorHandler";
 
 const app = express();
 
 app.use(express.json());
 
-// app.use("/", express.static(path.join(__dirname, "..", "public")));
+app.use("/api/v1", api);
 
-app.get("/", async (req, res) => {
-    const value = await redis.get("test");
-
-    return res.send(`<h1>${value}</h1>`);
+app.use("*", (req, _, next) => {
+    const error = new CustomError(404, `${req.baseUrl} not found`);
+    next(error);
 });
 
-app.use("/api/v1", api);
+app.use(errorHandler);
 
 export default app;

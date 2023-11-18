@@ -1,8 +1,13 @@
-import { Redis } from "ioredis";
+import { createClient } from "redis";
 
-const redis = new Redis({
-    port: Number(process.env.REDIS_PORT),
-    host: process.env.REDIS_HOST,
-});
+const REDIS_URL = `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`;
 
-export { redis };
+const redisConnect = async () => {
+    const client = await createClient({ url: REDIS_URL })
+        .on("error", (error) => console.log("Redis client error", error))
+        .connect();
+
+    return client;
+};
+
+export { redisConnect };

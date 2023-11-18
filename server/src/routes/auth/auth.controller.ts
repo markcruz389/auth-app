@@ -7,6 +7,7 @@ import {
     getUserByEmail,
     registerUser,
 } from "../../models/user/user.model";
+import { redisConnect } from "../../config/redis";
 
 const unauthenticated = (res: Response) => {
     return res.status(401).json({ message: "Invalid username or password" });

@@ -2,17 +2,43 @@ import { body } from "express-validator";
 
 const userRoles = ["admin"];
 
-const authValidator = [
+const registerValidator = [
     body("email")
         .notEmpty()
-        .withMessage("Email must not be empty")
+        .withMessage("Email required")
         .isEmail()
-        .withMessage("Invalid email")
-        .escape(),
+        .escape()
+        .trim()
+        .withMessage("Invalid email"),
     body("password", "Must be at least 6 characters")
         .isLength({ min: 6 })
-        .escape(),
-    body("role").isIn(userRoles).escape().withMessage("Invalid role"),
+        .escape()
+        .trim(),
+    body("role").isIn(userRoles).withMessage("Invalid role").escape().trim(),
+    body("firstName")
+        .notEmpty()
+        .withMessage("Firstname required")
+        .escape()
+        .trim(),
+    body("lastName")
+        .notEmpty()
+        .withMessage("Firstname required")
+        .escape()
+        .trim(),
 ];
 
-export { authValidator };
+const loginValidator = [
+    body("email")
+        .notEmpty()
+        .withMessage("Email required")
+        .isEmail()
+        .escape()
+        .trim()
+        .withMessage("Invalid email"),
+    body("password", "Must be at least 6 characters")
+        .isLength({ min: 6 })
+        .escape()
+        .trim(),
+];
+
+export { registerValidator, loginValidator };

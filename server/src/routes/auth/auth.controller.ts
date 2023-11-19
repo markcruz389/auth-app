@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { validationResult, matchedData } from "express-validator";
+import { matchedData } from "express-validator";
 import bcrypt from "bcrypt";
 
 import { getUserByEmail, registerUser } from "../../models/user/user.model";
@@ -9,39 +9,28 @@ const unauthenticated = (res: Response) => {
 };
 
 const httpRegisterUser = async (req: Request, res: Response) => {
-    try {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(422).json({ errors: errors.array() });
-        }
+    const { email, password, role, firstName, lastName } = matchedData(req);
 
-        const { email, password, role } = matchedData(req);
-
-        const existingUser = await getUserByEmail(email);
-        if (existingUser) {
-            return res
-                .status(400)
-                .json({ message: "Email already registered" });
-        }
-
-        const user = await registerUser(email, password, role);
-        if (!user) {
-            return res.status(400).json({ message: "Registration failed" });
-        }
-
-        return res.status(201).json(user);
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Internal Server Error" });
+    const existingUser = await getUserByEmail(email);
+    if (existingUser) {
+        return res.status(400).json({ message: "Email already registered" });
     }
+
+    const user = await registerUser({
+        email,
+        password,
+        role,
+        firstName,
+        lastName,
+    });
+    if (!user) {
+        return res.status(400).json({ message: "Registration failed" });
+    }
+
+    return res.status(201).json(user);
 };
 
 const httpLoginUser = async (req: Request, res: Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(422).json({ errors: errors.array() });
-    }
-
     const { email, password } = matchedData(req);
 
     const user = await getUserByEmail(email);
@@ -54,6 +43,7 @@ const httpLoginUser = async (req: Request, res: Response) => {
         return unauthenticated(res);
     }
 
+    // Sets session details
     req.session.user = { userId: user._id, role: user.role };
 
     return res.status(200).json({ message: "Successfully logged in" });

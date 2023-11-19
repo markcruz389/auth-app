@@ -1,23 +1,26 @@
-import { redisConnect } from "../config/redis";
+import session from "express-session";
+import RedisStore from "connect-redis";
 
-type Session = {
-    id: string;
-    role: "admin" | "user";
-};
+import { UserRole } from "../models/user/user.model";
+import { redisClient } from "./redis";
 
-const getSession = async (sessionId: string): Promise<undefined> => {
-    const client = await redisConnect();
-
-    const session = await client.get(sessionId);
-    if (!session) {
-        return;
+// Sets session type
+declare module "express-session" {
+    interface SessionData {
+        user: { userId: string; role: UserRole };
     }
+}
 
-    client.disconnect();
-};
+const expressSession = session({
+    name: process.env.REDIS_APP_NAME,
+    secret: process.env.SESSION_SECRET as string,
+    store: new RedisStore({
+        client: redisClient,
+        prefix: "session:",
+    }),
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false, maxAge: 60 * 60 * 1000, httpOnly: true },
+});
 
-const saveSession = async (sessionId: string) => {
-    const client = await redisConnect();
-
-    client.disconnect();
-};
+export default expressSession;

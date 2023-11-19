@@ -34,11 +34,13 @@ services:
             - SERVER_PORT=$SERVER_PORT
             - REDIS_PORT=$REDIS_PORT
             - REDIS_HOST=$REDIS_HOST
+            - REDIS_APP_NAME=$REDIS_APP_NAME
             - MONGODB_USER=$MONGODB_USER
             - MONGODB_PASSWORD=$MONGODB_PASSWORD
             - MONGODB_DATABASE=$MONGODB_DATABASE
             - MONGODB_HOST=$MONGODB_HOST
             - MONGO_PORT=$MONGO_PORT
+            - SESSION_SECRET=$SESSION_SECRET
         networks:
             - backend
 
